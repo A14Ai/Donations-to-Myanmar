@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fake School Payment</title>
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  #payment-section {
+    display: none;
+    margin-top: 20px;
+    padding: 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-sizing: border-box;
+  }
+  input.error {
+    border-color: red;
+  }
+  button {
+    padding: 12px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  #fake-confirmation {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+    display: none;
+  }
+  #donation-section {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  #donation-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .donation-button {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.3s ease;
+  }
+  .donation-button:hover {
+    background-color: #e9ecef;
+  }
+  .selected-donation {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+  }
+  #error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+    display: none;
+    font-size: 16px;
+  }
+  #donate-button {
+    padding: 15px 30px;
+    font-size: 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-image: linear-gradient(to right, #ff0000, #00ff00, #0000ff); /* Multi-color gradient */
+    animation: colorShift 5s infinite alternate; /* Adjust timing as needed */
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  @keyframes colorShift {
+    0% { background-image: linear-gradient(to right, #ff0000, #00ff00, #0000ff); }
+    33% { background-image: linear-gradient(to right, #00ff00, #0000ff, #ff0000); }
+    66% { background-image: linear-gradient(to right, #0000ff, #ff0000, #00ff00); }
+    100% { background-image: linear-gradient(to right, #ff0000, #00ff00, #0000ff); }
+  }
+  #donations-heading {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  #cookie-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #e0f7fa;
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #b2ebf2;
+    color: #333;
+    font-size: 14px;
+    border-radius: 0;
+  }
+  #cookie-text {
+    margin-bottom: 10px;
+  }
+  .cookie-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 12px;
+  }
+  .accept-necessary {
+    background-color: #4caf50;
+    color: white;
+  }
+  .accept-all {
+    background-color: #007bff;
+    color: white;
+  }
+  #confetti-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 33%; /* Confetti in bottom third of page */
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1000; /* Ensure confetti is above other elements */
+  }
+  .confetti {
+    width: 10px;
+    height: 10px;
+    background-color: #f00;
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+  <h1 id="donations-heading">Donations</h1>
+  <button id="donate-button">Donate to Myanmar</button>
+
+  <div id="payment-section">
+    <div id="donation-section">
+      <h2>Choose Donation Amount</h2>
+      <div id="donation-buttons">
+        <button class="donation-button" data-amount="1">1</button>
+        <button class="donation-button" data-amount="3">3</button>
+        <button class="donation-button" data-amount="5">5</button>
+        <button class="donation-button" data-amount="10">10</button>
+        <button class="donation-button" data-amount="25">25</button>
+        <button class="donation-button" data-amount="50">50</button>
+        <button class="donation-button" data-amount="100">100</button>
+        <button class="donation-button" data-amount="150">150</button>
+      </div>
+      <input type="hidden" id="donation-amount" name="donation-amount" value="">
+    </div>
+    <h2>Enter Payment Details</h2>
+    <div class="form-group">
+      <label for="cardholder">Cardholder Name:</label>
+      <input type="text" id="cardholder" name="cardholder" placeholder="Enter name">
+    </div>
+    <div class="form-group">
+      <label for="cardnumber">Card Number:</label>
+      <input type="number" id="cardnumber" name="cardnumber" placeholder="Enter fake card number">
+    </div>
+    <div class="form-group">
+      <label for="expiry">Expiry Date (MM/YY):</label>
+      <input type="text" id="expiry" name="expiry" placeholder="MM/YY">
+    </div>
+    <div class="form-group">
+      <label for="cvv">CVV:</label>
+      <input type="number" id="cvv" name="cvv" placeholder="Enter fake CVV">
+    </div>
+    <div id="error-message"></div>
+    <button onclick="validateAndSubmit()">Submit Payment (Fake)</button>
+    <div id="fake-confirmation">Payment details submitted (this is a fake transaction).</div>
+  </div>
+
+  <div id="cookie-section">
+    <div id="cookie-text">We'll use cookies to improve and customise your experience if you continue to browse. Is it OK if we also use cookies to show you personalised ads? <a href="#">Learn more and manage your cookies.</a></div>
+    <button class="cookie-button accept-necessary">Accept necessary cookies</button>
+    <button class="cookie-button accept-all">Accept all</button>
+    <div id="confetti-container"></div>
+  </div>
+
+  <script>
+    document.getElementById('donate-button').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.getElementById('payment-section').style.display = 'block';
+      this.style.display = 'none';
+      startConfetti(); // Start confetti on Donate button click
+    });
+
+
+
+    const donationButtons = document.querySelectorAll('.donation-button');
+    const donationAmountInput = document.getElementById('donation-amount');
+
+    donationButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const amount = this.dataset.amount;
+        donationAmountInput.value = amount;
+        donationButtons.forEach(b => b.classList.remove('selected-donation'));
+        this.classList.add('selected-donation');
+      });
+    });
+
+    function validateAndSubmit() {
+      const cardholderInput = document.getElementById('cardholder');
+      const cardNumberInput = document.getElementById('cardnumber');
+      const expiryInput = document.getElementById('expiry');
+      const cvvInput = document.getElementById('cvv');
+      const errorMessage = document.getElementById('error-message');
+      let hasErrors = false;
+
+      // Reset error styles
+      cardholderInput.classList.remove('error');
+      cardNumberInput.classList.remove('error');
+      expiryInput.classList.remove('error');
+      cvvInput.classList.remove('error');
+      errorMessage.style.display = 'none';
+
+      if (!donationAmountInput.value) {
+        hasErrors = true;
+        errorMessage.textContent = "Please choose a donation amount.";
+        errorMessage.style.display = 'block';
+      }
+      if (!cardholderInput.value.trim()) {
+        cardholderInput.classList.add('error');
+        hasErrors = true;
+      }
+      if (!cardNumberInput.value.trim() || cardNumberInput.value.length < 16) {
+        cardNumberInput.classList.add('error');
+        hasErrors = true;
+      }
+      if (!expiryInput.value.trim() || !/^\d{2}\/\d{2}$/.test(expiryInput.value)) {
+        expiryInput.classList.add('error');
+        hasErrors = true;
+      }
+      if (!cvvInput.value.trim() || cvvInput.value.length < 3) {
+        cvvInput.classList.add('error');
+        hasErrors = true;
+      }
+
+      if (hasErrors) {
+        errorMessage.textContent = "Please fill in all fields correctly.";
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      errorMessage.style.display = 'none';
+      document.getElementById('fake-confirmation').style.display = 'block';
+      startConfetti(); // Start confetti on form submission
+    }
+
+    const cookieSection = document.getElementById('cookie-section');
+    const confettiContainer = document.getElementById('confetti-container');
+    const donateButton = document.getElementById('donate-button');
+
+    function createConfetti() {
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.top = `${Math.random() * 100}%`;
+        const colors = ['#ff0000', '#00ff00', '#0000ff']; // Red, Green, Blue
+        confetti.style.backgroundColor = colors[i % colors.length];
+        confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        confetti.style.opacity = 0;
+        confettiContainer.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.style.opacity = 1;
+          confetti.style.transform = `translateY(${window.innerHeight * 0.3}px) rotate(${Math.random() * 360}deg)`;
+        }, 10);
+      }
+    }
+
+    function removeConfetti() {
+      confettiContainer.innerHTML = '';
+    }
+
+    function handleCookieAccept() {
+      startConfetti(); // Start confetti on cookie accept
+      cookieSection.style.backgroundColor = 'transparent';
+      cookieSection.style.color = 'transparent';
+      setTimeout(() => {
+        confettiContainer.style.opacity = 0;
+        setTimeout(removeConfetti, 1000);
+        cookieSection.style.display = 'none';
+      }, 3000);
+    }
+
+    function startConfetti() {
+      confettiContainer.style.opacity = 1;
+      createConfetti();
+       setTimeout(() => {
+        confettiContainer.style.opacity = 0;
+        setTimeout(removeConfetti, 1000);
+    }, 3000);
+    }
+
+    document.querySelector('.accept-necessary').addEventListener('click', handleCookieAccept);
+    document.querySelector('.accept-all').addEventListener('click', handleCookieAccept);
+  </script>
+
+</body>
+</html>
+
